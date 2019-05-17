@@ -93,5 +93,4 @@ window.addEventListener('DOMContentLoaded', function () {
   //всё что захочешь...
 
 
-
 });
