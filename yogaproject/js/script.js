@@ -12,8 +12,8 @@ window.addEventListener('DOMContentLoaded', function () {
   //родитель, который включает всё
   let tab = document.querySelectorAll('.info-header-tab'), //кнопки перекл
       info = document.querySelector('.info-header'), //родитель кнопок
-      tabContent = document.querySelectorAll('.info-tabcontent'),
-      tabNumber = 0; //содержание вкладок
+      tabContent = document.querySelectorAll('.info-tabcontent'); //содержание вкладок
+      // tabNumber = 0; 
 
 
   function hideTabContent(a) {
@@ -43,8 +43,8 @@ window.addEventListener('DOMContentLoaded', function () {
           //находим этот чертов индекс цели!!!)
           hideTabContent(0);
           showTabContent(i);
-          tabNumber = i;
-          modalShow(description[tabNumber]);
+          // tabNumber = i;
+          // modalShow(description[tabNumber]);
           break;
         }
       }
@@ -60,7 +60,7 @@ window.addEventListener('DOMContentLoaded', function () {
   //4ф-я, которая будет обновлять данные на стр
 
   //1
-  let deadline = '2020-05-15';
+  let deadline = '2019-06-28';
 
   //2
   function getTimeRemaining(endtime) {
@@ -123,27 +123,65 @@ window.addEventListener('DOMContentLoaded', function () {
 
   //Модальное окно
 
-  let more = document.querySelector('.more'),
-      description = document.querySelectorAll('.description-btn'),
-      overlay = document.querySelector('.overlay'),
-      close = document.querySelector('.popup-close');
+  // let more = document.querySelector('.more'),
+  //     description = document.querySelectorAll('.description-btn'),
+  //     overlay = document.querySelector('.overlay'),
+  //     close = document.querySelector('.popup-close');
 
-  close.addEventListener('click', function () {
-    overlay.style.display = 'none';
-    more.classList.remove('more-splash');
-    document.body.style.overflow = '';
+  // close.addEventListener('click', function () {
+  //   overlay.style.display = 'none';
+  //   more.classList.remove('more-splash');
+  //   document.body.style.overflow = '';
+  // }); 
+
+  // function modalShow(button) {
+  //   button.addEventListener('click', function () {
+  //     overlay.style.display = 'block';
+  //     this.classList.add('more-splash');
+  //     document.body.style.overflow = 'hidden';
+  //   });
+  // }
+  
+  // modalShow(more);
+  // modalShow(description[tabNumber]);
+
+  let  overlay = document.querySelector('.overlay'),
+  //избавились от всех лишних переменных, оставили только оверлей
+        isActiveBtn; //об. проверочную переменную
+
+  //делаем стрелочную ф-ю, будет открыв и закрыв модалку
+  const bindModal = (overlayStatus, overflowStatus, classListMethod, elem) => {
+    //последним аргументом делаем элемент, с которого мы будем удалять класс
+    if (classListMethod == 'add') isActiveBtn = elem;
+    if (!elem) elem = isActiveBtn; //во время вызова закрытия через крестик мы просто
+    //не задаем 4й аргумент ф-ии, и соответственно берем с момента открытия модалки
+
+    overlay.style.display = overlayStatus;
+    // this.classList.classListMethod('more-splash'); //в таком виде работать не будет,
+    // т.к. придет строка&
+    elem.classList[classListMethod]('more-splash'); //c квадратными скобками
+    //в объект classList придет правильное значение
+    document.body.style.overflow = overflowStatus;
+  };
+
+  document.body.addEventListener('click', e => {
+    //делаем один обрабочик событий на клики во всем боди,
+    //при помощи условий будем отлавливать любое событие в любом месте
+    let target = e.target;
+    if ( target.classList.contains('more') || target.classList.contains('description-btn')) {
+      bindModal('block', 'hidden', 'add', target);
+    }
+    if ( target.classList.contains('popup-close')) {
+      bindModal('none', '', 'remove');
+    }
+
   });
 
-  function modalShow(button) {
-    button.addEventListener('click', function () {
-      overlay.style.display = 'block';
-      this.classList.add('more-splash');
-      document.body.style.overflow = 'hidden';
-    });
-  }
+
+
+
+
   
-  modalShow(more);
-  modalShow(description[tabNumber]);
 
 
 
