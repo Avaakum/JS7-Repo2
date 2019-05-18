@@ -12,7 +12,8 @@ window.addEventListener('DOMContentLoaded', function () {
   //родитель, который включает всё
   let tab = document.querySelectorAll('.info-header-tab'), //кнопки перекл
       info = document.querySelector('.info-header'), //родитель кнопок
-      tabContent = document.querySelectorAll('.info-tabcontent'); //содержание вкладок
+      tabContent = document.querySelectorAll('.info-tabcontent'),
+      tabNumber = 0; //содержание вкладок
 
 
   function hideTabContent(a) {
@@ -42,6 +43,8 @@ window.addEventListener('DOMContentLoaded', function () {
           //находим этот чертов индекс цели!!!)
           hideTabContent(0);
           showTabContent(i);
+          tabNumber = i;
+          modalShow(description[tabNumber]);
           break;
         }
       }
@@ -57,7 +60,7 @@ window.addEventListener('DOMContentLoaded', function () {
   //4ф-я, которая будет обновлять данные на стр
 
   //1
-  let deadline = '2019-05-15';
+  let deadline = '2020-05-15';
 
   //2
   function getTimeRemaining(endtime) {
@@ -115,8 +118,39 @@ window.addEventListener('DOMContentLoaded', function () {
       }
     } 
   }
-
+ 
   setClock('timer', deadline);
+
+  //Модальное окно
+
+  let more = document.querySelector('.more'),
+      description = document.querySelectorAll('.description-btn'),
+      overlay = document.querySelector('.overlay'),
+      close = document.querySelector('.popup-close');
+
+  close.addEventListener('click', function () {
+    overlay.style.display = 'none';
+    more.classList.remove('more-splash');
+    document.body.style.overflow = '';
+  });
+
+  function modalShow(button) {
+    button.addEventListener('click', function () {
+      overlay.style.display = 'block';
+      this.classList.add('more-splash');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  
+  modalShow(more);
+  modalShow(description[tabNumber]);
+
+
+
+
+
+
+      
 
 
 
