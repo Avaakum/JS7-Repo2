@@ -13,7 +13,6 @@ window.addEventListener('DOMContentLoaded', function () {
   let tab = document.querySelectorAll('.info-header-tab'), //кнопки перекл
       info = document.querySelector('.info-header'), //родитель кнопок
       tabContent = document.querySelectorAll('.info-tabcontent'); //содержание вкладок
-      // tabNumber = 0; 
 
 
   function hideTabContent(a) {
@@ -43,8 +42,6 @@ window.addEventListener('DOMContentLoaded', function () {
           //находим этот чертов индекс цели!!!)
           hideTabContent(0);
           showTabContent(i);
-          // tabNumber = i;
-          // modalShow(description[tabNumber]);
           break;
         }
       }
@@ -123,28 +120,6 @@ window.addEventListener('DOMContentLoaded', function () {
 
   //Модальное окно
 
-  // let more = document.querySelector('.more'),
-  //     description = document.querySelectorAll('.description-btn'),
-  //     overlay = document.querySelector('.overlay'),
-  //     close = document.querySelector('.popup-close');
-
-  // close.addEventListener('click', function () {
-  //   overlay.style.display = 'none';
-  //   more.classList.remove('more-splash');
-  //   document.body.style.overflow = '';
-  // }); 
-
-  // function modalShow(button) {
-  //   button.addEventListener('click', function () {
-  //     overlay.style.display = 'block';
-  //     this.classList.add('more-splash');
-  //     document.body.style.overflow = 'hidden';
-  //   });
-  // }
-  
-  // modalShow(more);
-  // modalShow(description[tabNumber]);
-
   let  overlay = document.querySelector('.overlay'),
   //избавились от всех лишних переменных, оставили только оверлей
         isActiveBtn; //об. проверочную переменную
@@ -174,7 +149,6 @@ window.addEventListener('DOMContentLoaded', function () {
     if ( target.classList.contains('popup-close')) {
       bindModal('none', '', 'remove');
     }
-
   });
 
 
