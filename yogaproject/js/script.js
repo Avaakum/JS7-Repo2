@@ -13,13 +13,6 @@ window.addEventListener('DOMContentLoaded',  () => {
   let tab = document.querySelectorAll('.info-header-tab'), //кнопки перекл
       tabContent = document.querySelectorAll('.info-tabcontent'); //содержание вкладок
 
-
-  // function hideTabContent(a) {
-  //   for (let i = a; i < tabContent.length; i++) {
-  //     tabContent[i].classList.remove('show');
-  //     tabContent[i].classList.add('hide');
-  //   }
-  // }
   const hideTabContent = (a = 1) => {
     for (let i = a; i < tabContent.length; i++) {
       tabContent[i].classList.remove('show');
@@ -30,12 +23,6 @@ window.addEventListener('DOMContentLoaded',  () => {
   //вызываем с загрузки ДОМ, чтобы показать одну вкладку, и скрыть все
   //остальные
 
-  // function showTabContent(b) {
-  //   if (tabContent[b].classList.contains('hide')) {
-  //     tabContent[b].classList.remove('hide');
-  //     tabContent[b].classList.add('show');
-  //   }
-  // }
   const showTabContent = (b) => {
     if (tabContent[b].classList.contains('hide')) {
       tabContent[b].classList.remove('hide');
@@ -50,11 +37,10 @@ window.addEventListener('DOMContentLoaded',  () => {
   //2сколько времени осталось до дедлайна: из дедлайна вычесть время сейчас, и из этой разницы будем брать всё
   //3ф-я, которая будет изменять величины
   //4ф-я, которая будет обновлять данные на стр
-
   //1
   let deadline = '2019-06-28';
   //2
-  function getTimeRemaining(endtime) {
+  const getTimeRemaining = (endtime) => {
     let t = Date.parse(endtime) - Date.parse(new Date()),
       //парсим дату на милисек
       //это и будет разници между датами(техн переменная внутри ф-ии)
@@ -85,7 +71,7 @@ window.addEventListener('DOMContentLoaded',  () => {
   }
 
   //3, 4
-  function setClock(id, endtime) { //атрибудт id таймера в html и конец таймера
+ const setClock = (id, endtime) => { //атрибудт id таймера в html и конец таймера
     let timer = document.getElementById(id),
       hours = timer.querySelector('.hours'),
       minutes = timer.querySelector('.minutes'),
@@ -108,7 +94,6 @@ window.addEventListener('DOMContentLoaded',  () => {
       }, 1000);
   }
   setClock('timer', deadline);
-
 
 
   //Модальное окно
@@ -157,6 +142,9 @@ window.addEventListener('DOMContentLoaded',  () => {
       }
     }
   });
+
+
+  //
 
 
 

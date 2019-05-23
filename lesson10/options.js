@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
+  let textInput = document.querySelector('.input');
   class Options {
     constructor(height, width, bg, fontSize = 14, textAlign = 'justify') {
       this.height = height;
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     newDiv(text) {
       let div = document.createElement('div');
+
       div.textContent = text;
       div.style.cssText = `height: ${this.height}px; \
       width: ${this.width}px; \
