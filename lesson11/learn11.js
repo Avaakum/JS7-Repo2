@@ -5,11 +5,11 @@
 //JSON - JS Object Notation. Это текстовый формат обмена данными. Изначально
 //появился в JS, но теперь используется и в других языках программирования
 // Это всего лишь набор пар "ключ-значение" и главное правило, что все строки
-//должны быть в двойных кавычках. В качестве значения моuqn быть массивы, числа, строки,
+//должны быть в двойных кавычках. В качестве значения могут быть массивы, числа, строки,
 //логические значения или null 
 
 let options = {
-  width:1366,
+  width: 1366,
   height: 769,
   background: 'red',
   font: {
@@ -86,6 +86,83 @@ inputRub.addEventListener('input', () => {
 
 
 
+});
+
+
+// из нашего проекта с объяснениями
+
+let message = {
+  loading: 'Загрузка...',
+  success: 'Спасибо! Скоро мы с вам свяжемся',
+  failure: "ЧТо-то пошло не так..."
+};
+
+let form = document.querySelectorAll('form'),
+  // pageForm = document.querySelector('#form'),
+  input = form.getElementsByTagName('input'),
+  statusMessge = document.createElement('div');
+
+statusMessge.classList.add('status');
+
+// function sentForm(params) {
+
+// }
+form.addEventListener('submit', function (event) {
+  event.preventDefault();
+  form.appendChild(statusMessge);
+
+  let request = new XMLHttpRequest();
+  request.open('POST', 'server.php'); //настраиваем запрос. Пост, адрес запроса
+
+  //формируем заголовку для отправки данных формы в обычном формате
+  // request.setRequestHeader('Contetnt-type', 'application/x-www-form-urlencoded');
+  //настраиваем заголовки. Наш контент - будут данные из формы
+  //теперь надо получить данные, которые ввел пользователь. Используем встроенный
+  //объект formdata(почти везе работает)
+
+  // а теперь преобразуем данные в JSON для отправки на сервер, поэтому формируем
+  // заголовки по-другому
+  request.setRequestHeader('Contetnt-type', 'application/json; charset=utf-8');
+
+
+  //получаем все данные из формы
+  let formData = new FormData(form);
+  //отправляем запрос с формой
+
+  //создаем пустой объект, т.к. мы не можем просто закинуть данные в JSON-формате
+  //на сервер
+  let obj = {};
+
+  formData.forEach(function (value, key) {
+    obj[key] = value;
+  }); //мы превратили наш объект, какой бы он ни был в обычный читаемый объект
+  //это нужно для того что-бы объект потом правильно "конвертировался" в JSON, 
+  //данный алгоритм используемтся много где
+
+  let json = JSON.stringify(obj); //превращаем объект в JSON строку
+
+
+  // request.send(formData); //отправляем наш объект без преобразования
+  request.send(json); // отправляем наш json объект
+
+  //ОС на изменение статуса объекта запроса и выведения сообщения
+  //о статусе. Так же можно в зависимости от статуса выполнять различные 
+  //действия, показывать статус бар итд
+  request.addEventListener('readystatechange', function () {
+    if (request.readyState < 4) {
+      statusMessge.innerHTML = message.loading;
+    } else if (request.readyState === 4 && request.status == 200) {
+      //когда все прошло успешно, то здесь вся магия, можно с полученными данными
+      //тут уже сделать что нам угодно
+      statusMessge.innerHTML = message.success;
+    } else {
+      statusMessge.innerHTML = message.failure;
+    }
+  });
+  //очистка всех инпутов после отправки формы
+  for (let i = 0; i < input.length; i++) {
+    input[i].value = '';
+  }
 });
 
 
