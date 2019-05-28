@@ -151,83 +151,64 @@ window.addEventListener('DOMContentLoaded',  () => {
     failure: "ЧТо-то пошло не так..."
   };
 
-  let  statusMessge = document.createElement('div');
-      
+  let statusMessge = document.createElement('div'); 
       statusMessge.classList.add('status');
 
 
   const sendForm = (elem) => {
+    
     elem.appendChild(statusMessge);
 
-    let request = new XMLHttpRequest();
+    let promise = new Promise( (resolve, reject)  =>  {
+      let request = new XMLHttpRequest();
 
-    request.open('POST', 'server.php'); 
-    request.setRequestHeader('Contetnt-type', 'application/json; charset=utf-8');
+      request.open('POST', 'server.php');
+      request.setRequestHeader('Contetnt-type', 'application/json; charset=utf-8');
 
-    let formData = new FormData(elem),
+      let formData = new FormData(elem),
         obj = {};
 
-    formData.forEach(function (value, key) {
-      obj[key] = value;
-    }); 
+      formData.forEach( (value, key) => {
+        obj[key] = value;
+      });
 
-    let json = JSON.stringify(obj); 
-    request.send(json); 
+      let json = JSON.stringify(obj);
+      request.send(json);
 
-    request.addEventListener('readystatechange', function () {
-      if (request.readyState < 4) {
-        statusMessge.innerHTML = message.loading;
-      } else if (request.readyState === 4 && request.status == 200) {
-        statusMessge.innerHTML = message.success;
-      } else {
-        statusMessge.innerHTML = message.failure;
-      }
+      request.addEventListener('readystatechange',  () => {
+        if (request.readyState < 4) {
+          statusMessge.innerHTML = message.loading;
+        } else if (request.readyState === 4 && request.status == 200) {
+          resolve(statusMessge.innerHTML = message.success);
+        } else {
+          reject(statusMessge.innerHTML = message.failure);
+        }
+      });
     });
-    //очистка всех инпутов после отправки формы
-    //в данном случае отлавливает все возможные элементы формы
-    //и очищает их value
+
     for (let i = 0; i < elem.length; i++) {
       elem[i].value = '';
     }
+    
+    return promise;
   };
 
   document.body.addEventListener('submit', e => {
     //submit - событие формы, поэтому все работает, несмотря
     // на то, что цель кнопка
     e.preventDefault();
-
-    // console.log(e.target.length);
-    // console.log(e.target[0].value);
     sendForm(e.target);
   });
 
-// Валидация данных ввода в инпуты
-document.body.addEventListener("input", e => {
-  let  target = e.target;
+  // Валидация данных ввода в инпуты
+  document.body.addEventListener("input", e => {
+    let  target = e.target;
 
-  if (target.getAttribute("type") === "tel") {
-    target.value = "+" + target.value.replace(/[^0-9]/g, "");
-    if (target.value.length == 1) {
-      target.value = "";
+    if (target.getAttribute("type") === "tel") {
+      target.value = "+" + target.value.replace(/[^0-9]/g, "");
+      if (target.value.length == 1) {
+        target.value = "";
+      }
     }
-  }
-});
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
+  });
 });
