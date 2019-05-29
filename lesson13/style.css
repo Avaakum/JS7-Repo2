@@ -1,0 +1,36 @@
+/* * {} */
+
+body {
+  background-color: yellow;
+}
+
+button {
+  width: 60px;
+  height: 35px;
+  background-color: green;
+}
+
+img {
+  max-width: 100%;
+  text-align: center;
+}
+
+.container {
+  margin: auto;
+  width: 1500px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+}
+
+.list {
+  margin-top: 50px;
+  margin-bottom: 100px;
+  text-align: center;
+}
+
+.active {
+  border: 1px solid red;
+}
