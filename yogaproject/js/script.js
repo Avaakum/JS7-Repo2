@@ -1,7 +1,7 @@
 // window.addEventListener('load') //для нашего окна есть 2 события
 //первое - load: оозначает выполнение скрипта только после полной загрузки 
 //страницы
-window.addEventListener('DOMContentLoaded',  () => {
+window.addEventListener('DOMContentLoaded', () => {
   //это событие для окна говорит о загрузку дерева тегов, т.е. загрузке
   //всей структуры DOM и после этого уже наш скрипт
   'use strict';
@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded',  () => {
   //Необходимые составляющие: содержание каждого отдельного таба, кнопки перелючения табов,
   //родитель, который включает всё
   let tab = document.querySelectorAll('.info-header-tab'), //кнопки перекл
-      tabContent = document.querySelectorAll('.info-tabcontent'); //содержание вкладок
+    tabContent = document.querySelectorAll('.info-tabcontent'); //содержание вкладок
 
   const hideTabContent = (a = 1) => {
     for (let i = a; i < tabContent.length; i++) {
@@ -71,14 +71,14 @@ window.addEventListener('DOMContentLoaded',  () => {
   };
 
   //3, 4
- const setClock = (id, endtime) => { //атрибудт id таймера в html и конец таймера
+  const setClock = (id, endtime) => { //атрибудт id таймера в html и конец таймера
     let timer = document.getElementById(id),
       hours = timer.querySelector('.hours'),
       minutes = timer.querySelector('.minutes'),
       seconds = timer.querySelector('.seconds'),
       // timeInterval = setInterval(updateClock, 1000);
       timeInterval = setInterval(() => {
-        
+
         let t = getTimeRemaining(endtime); //при запуске наш ф-ии updeteClock 
         //проверяет остаток до дедлайна
         hours.textContent = t.hours;
@@ -106,10 +106,10 @@ window.addEventListener('DOMContentLoaded',  () => {
     //последним аргументом делаем элемент, с которого мы будем удалять класс
     if (classListMethod == 'add') {
       isActiveBtn = elem;
-    } 
+    }
     if (!elem) {
       elem = isActiveBtn;
-    }  //во время вызова закрытия через крестик мы просто
+    } //во время вызова закрытия через крестик мы просто
     //не задаем 4й аргумент ф-ии, и соответственно берем с момента открытия модалки
 
     overlay.style.display = overlayStatus;
@@ -120,40 +120,40 @@ window.addEventListener('DOMContentLoaded',  () => {
     document.body.style.overflow = overflowStatus;
   };
 
-  
-  
+
+
   // Отправку формы на сервер 
   let message = {
     loading: 'Загрузка...',
     success: 'Спасибо! Скоро мы с вам свяжемся',
     failure: "ЧТо-то пошло не так..."
   };
-  
-  let statusMessge = document.createElement('div'); 
+
+  let statusMessge = document.createElement('div');
   statusMessge.classList.add('status');
-  
-  
+
+
   const sendForm = (elem) => {
-    
+
     elem.appendChild(statusMessge);
-    
-    let promise = new Promise( (resolve, reject)  =>  {
+
+    let promise = new Promise((resolve, reject) => {
       let request = new XMLHttpRequest();
-      
+
       request.open('POST', 'server.php');
       request.setRequestHeader('Contetnt-type', 'application/json; charset=utf-8');
-      
+
       let formData = new FormData(elem),
-      obj = {};
-      
-      formData.forEach( (value, key) => {
+        obj = {};
+
+      formData.forEach((value, key) => {
         obj[key] = value;
       });
-      
+
       let json = JSON.stringify(obj);
       request.send(json);
-      
-      request.addEventListener('readystatechange',  () => {
+
+      request.addEventListener('readystatechange', () => {
         if (request.readyState < 4) {
           statusMessge.innerHTML = message.loading;
         } else if (request.readyState === 4 && request.status == 200) {
@@ -163,86 +163,91 @@ window.addEventListener('DOMContentLoaded',  () => {
         }
       });
     });
-    
+
     for (let i = 0; i < elem.length; i++) {
       elem[i].value = '';
     }
-    
+
     return promise;
   };
-  
+
   document.body.addEventListener('submit', e => {
     //submit - событие формы, поэтому все работает, несмотря
     // на то, что цель кнопка
     e.preventDefault();
     sendForm(e.target);
   });
-  
+
   // Валидация данных ввода в инпуты
   document.body.addEventListener("input", e => {
-    let  target = e.target;
-    
+    let target = e.target;
+
     if (target.getAttribute("type") === "tel") {
       target.value = "+" + target.value.replace(/[^0-9]/g, "");
       if (target.value.length == 1) {
         target.value = "";
       }
     }
-    if (target.getAttribute("type") === "number") {      
+    if (target.getAttribute("type") === "number") {
       target.value = target.value.replace(/[,.+e]/g, "");
+      if ((target.value.length == 1) && (target.value == "0")) {
+        target.value = "";
+      }
+
     }
   });
-  
+
 
 
 
   //Slider
   let slideIndex = 1,
-      slides = document.querySelectorAll('.slider-item'),
-      dots = document.querySelectorAll('.dot');
+    slides = document.querySelectorAll('.slider-item'),
+    dots = document.querySelectorAll('.dot');
 
   showSlides(slideIndex);
-  
+
   //принимает один аргумент для переключения слайдов
-  function showSlides (n) {
-    
+  function showSlides(n) {
+
     if (n > slides.length) {
       slideIndex = 1;
     }
     if (n < 1) {
       slideIndex = slides.length;
     }
-    
-    slides.forEach( item => item.style.display = 'none');
+
+    slides.forEach(item => item.style.display = 'none');
     // for (let i = 0; i < slides.length; i++) {
-      //   slides[i].style.display = 'none';
-      // } //тоже самое
-      dots.forEach( item => item.classList.remove('dot-active'));
-      
-      //конвертируем нумерацию слайдов в JS нумерацию с 0
-      slides[slideIndex - 1].style.display = 'block';
-      dots[slideIndex - 1].classList.add('dot-active');
-    }
-    
+    //   slides[i].style.display = 'none';
+    // } //тоже самое
+    dots.forEach(item => item.classList.remove('dot-active'));
+
+    //конвертируем нумерацию слайдов в JS нумерацию с 0
+    slides[slideIndex - 1].style.display = 'block';
+    dots[slideIndex - 1].classList.add('dot-active');
+  }
+
   function plusSlides(n) {
     //узнаем значение нового слайда, через прибавление n к n
     //и сразу записываем это значение в ф-ю(это для дотов, а так было бы просто
     // ++)
     showSlides(slideIndex += n);
   }
+
   function currentSlide(n) {
     showSlides(slideIndex = n);
   }
-    
 
-  
+
+
   document.body.addEventListener('click', e => {
     //делаем один обрабочик событий на клики во всем боди,
     //при помощи условий будем отлавливать любое событие в любом месте
     let target = e.target;
-    
+
     //табы
-    if ( target && (target.classList.contains('more') || target.classList.contains('description-btn'))) {
+    if (target && (target.classList.contains('more') || target.classList.contains('description-btn'))) {
       bindModal('block', 'hidden', 'add', target);
     }
     if (target && target.classList.contains('popup-close')) {
@@ -260,6 +265,7 @@ window.addEventListener('DOMContentLoaded',  () => {
       }
     }
 
+    
     //слайдер
     if (target.classList.contains('prev') || target.classList.contains('arrow-left')) {
       plusSlides(-1);
@@ -267,7 +273,7 @@ window.addEventListener('DOMContentLoaded',  () => {
     if (target.classList.contains('next') || target.classList.contains('arrow-right')) {
       plusSlides(1);
     }
-    if (target.classList.contains('dot')) {      
+    if (target.classList.contains('dot')) {
       for (let i = 0; i < dots.length + 1; i++) {
         if (target.classList.contains('dot') && target == dots[i - 1]) {
           currentSlide(i);
@@ -275,31 +281,30 @@ window.addEventListener('DOMContentLoaded',  () => {
       }
     }
   });
-    
 
 
   //Калькулятор
   let persons = document.querySelectorAll('.counter-block-input')[0],
-      restDays = document.querySelectorAll('.counter-block-input')[1],
-      place = document.getElementById('select'),
-      totalValue = document.getElementById('total'),
-      personsSum = 0,
-      daysSum = 0,
-      total = 0;
+    restDays = document.querySelectorAll('.counter-block-input')[1],
+    place = document.getElementById('select'),
+    totalValue = document.getElementById('total'),
+    personsSum = 0,
+    daysSum = 0,
+    total = 0;
 
   totalValue.innerHTML = 0;
 
   persons.addEventListener('input', function () {
-    // totalValue.innerHTML = 0;
     personsSum = +this.value;
-    total = (daysSum + personsSum)*4000;
+    total = (daysSum + personsSum) * 4000;
 
     if (restDays.value == '' || persons.value == '') {
       totalValue.innerHTML = 0;
     } else {
-      totalValue.innerHTML = total;
+      totalValue.innerHTML = total * place.options[place.selectedIndex].value;
+      //для учета уже выбранного select-input
     }
- 
+
   });
 
   restDays.addEventListener('input', function () {
@@ -309,7 +314,7 @@ window.addEventListener('DOMContentLoaded',  () => {
     if (persons.value == '' || restDays.value == '') {
       totalValue.innerHTML = 0;
     } else {
-      totalValue.innerHTML = total;
+      totalValue.innerHTML = total * place.options[place.selectedIndex].value;
     }
   });
 
@@ -322,6 +327,5 @@ window.addEventListener('DOMContentLoaded',  () => {
       totalValue.innerHTML = a * this.options[this.selectedIndex].value;
     }
   });
-
 
 });
