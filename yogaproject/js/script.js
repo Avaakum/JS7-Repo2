@@ -120,10 +120,128 @@ window.addEventListener('DOMContentLoaded',  () => {
     document.body.style.overflow = overflowStatus;
   };
 
+  
+  
+  // Отправку формы на сервер 
+  let message = {
+    loading: 'Загрузка...',
+    success: 'Спасибо! Скоро мы с вам свяжемся',
+    failure: "ЧТо-то пошло не так..."
+  };
+  
+  let statusMessge = document.createElement('div'); 
+  statusMessge.classList.add('status');
+  
+  
+  const sendForm = (elem) => {
+    
+    elem.appendChild(statusMessge);
+    
+    let promise = new Promise( (resolve, reject)  =>  {
+      let request = new XMLHttpRequest();
+      
+      request.open('POST', 'server.php');
+      request.setRequestHeader('Contetnt-type', 'application/json; charset=utf-8');
+      
+      let formData = new FormData(elem),
+      obj = {};
+      
+      formData.forEach( (value, key) => {
+        obj[key] = value;
+      });
+      
+      let json = JSON.stringify(obj);
+      request.send(json);
+      
+      request.addEventListener('readystatechange',  () => {
+        if (request.readyState < 4) {
+          statusMessge.innerHTML = message.loading;
+        } else if (request.readyState === 4 && request.status == 200) {
+          resolve(statusMessge.innerHTML = message.success);
+        } else {
+          reject(statusMessge.innerHTML = message.failure);
+        }
+      });
+    });
+    
+    for (let i = 0; i < elem.length; i++) {
+      elem[i].value = '';
+    }
+    
+    return promise;
+  };
+  
+  document.body.addEventListener('submit', e => {
+    //submit - событие формы, поэтому все работает, несмотря
+    // на то, что цель кнопка
+    e.preventDefault();
+    sendForm(e.target);
+  });
+  
+  // Валидация данных ввода в инпуты
+  document.body.addEventListener("input", e => {
+    let  target = e.target;
+    
+    if (target.getAttribute("type") === "tel") {
+      target.value = "+" + target.value.replace(/[^0-9]/g, "");
+      if (target.value.length == 1) {
+        target.value = "";
+      }
+    }
+    if (target.getAttribute("type") === "number") {      
+      target.value = target.value.replace(/[,.+e]/g, "");
+    }
+  });
+  
+
+
+
+  //Slider
+  let slideIndex = 1,
+      slides = document.querySelectorAll('.slider-item'),
+      dots = document.querySelectorAll('.dot');
+
+  showSlides(slideIndex);
+  
+  //принимает один аргумент для переключения слайдов
+  function showSlides (n) {
+    
+    if (n > slides.length) {
+      slideIndex = 1;
+    }
+    if (n < 1) {
+      slideIndex = slides.length;
+    }
+    
+    slides.forEach( item => item.style.display = 'none');
+    // for (let i = 0; i < slides.length; i++) {
+      //   slides[i].style.display = 'none';
+      // } //тоже самое
+      dots.forEach( item => item.classList.remove('dot-active'));
+      
+      //конвертируем нумерацию слайдов в JS нумерацию с 0
+      slides[slideIndex - 1].style.display = 'block';
+      dots[slideIndex - 1].classList.add('dot-active');
+    }
+    
+  function plusSlides(n) {
+    //узнаем значение нового слайда, через прибавление n к n
+    //и сразу записываем это значение в ф-ю(это для дотов, а так было бы просто
+    // ++)
+    showSlides(slideIndex += n);
+  }
+  function currentSlide(n) {
+    showSlides(slideIndex = n);
+  }
+    
+
+  
   document.body.addEventListener('click', e => {
     //делаем один обрабочик событий на клики во всем боди,
     //при помощи условий будем отлавливать любое событие в любом месте
     let target = e.target;
+    
+    //табы
     if ( target && (target.classList.contains('more') || target.classList.contains('description-btn'))) {
       bindModal('block', 'hidden', 'add', target);
     }
@@ -141,74 +259,82 @@ window.addEventListener('DOMContentLoaded',  () => {
         }
       }
     }
-  });
 
-
-  // Отправку формы на сервер 
-  let message = {
-    loading: 'Загрузка...',
-    success: 'Спасибо! Скоро мы с вам свяжемся',
-    failure: "ЧТо-то пошло не так..."
-  };
-
-  let statusMessge = document.createElement('div'); 
-      statusMessge.classList.add('status');
-
-
-  const sendForm = (elem) => {
-    
-    elem.appendChild(statusMessge);
-
-    let promise = new Promise( (resolve, reject)  =>  {
-      let request = new XMLHttpRequest();
-
-      request.open('POST', 'server.php');
-      request.setRequestHeader('Contetnt-type', 'application/json; charset=utf-8');
-
-      let formData = new FormData(elem),
-        obj = {};
-
-      formData.forEach( (value, key) => {
-        obj[key] = value;
-      });
-
-      let json = JSON.stringify(obj);
-      request.send(json);
-
-      request.addEventListener('readystatechange',  () => {
-        if (request.readyState < 4) {
-          statusMessge.innerHTML = message.loading;
-        } else if (request.readyState === 4 && request.status == 200) {
-          resolve(statusMessge.innerHTML = message.success);
-        } else {
-          reject(statusMessge.innerHTML = message.failure);
-        }
-      });
-    });
-
-    for (let i = 0; i < elem.length; i++) {
-      elem[i].value = '';
+    //слайдер
+    if (target.classList.contains('prev') || target.classList.contains('arrow-left')) {
+      plusSlides(-1);
     }
-    
-    return promise;
-  };
-
-  document.body.addEventListener('submit', e => {
-    //submit - событие формы, поэтому все работает, несмотря
-    // на то, что цель кнопка
-    e.preventDefault();
-    sendForm(e.target);
-  });
-
-  // Валидация данных ввода в инпуты
-  document.body.addEventListener("input", e => {
-    let  target = e.target;
-
-    if (target.getAttribute("type") === "tel") {
-      target.value = "+" + target.value.replace(/[^0-9]/g, "");
-      if (target.value.length == 1) {
-        target.value = "";
+    if (target.classList.contains('next') || target.classList.contains('arrow-right')) {
+      plusSlides(1);
+    }
+    if (target.classList.contains('dot')) {      
+      for (let i = 0; i < dots.length + 1; i++) {
+        if (target.classList.contains('dot') && target == dots[i - 1]) {
+          currentSlide(i);
+        }
       }
     }
   });
+    
+
+
+  //Калькулятор
+  let persons = document.querySelectorAll('.counter-block-input')[0],
+      restDays = document.querySelectorAll('.counter-block-input')[1],
+      place = document.getElementById('select'),
+      totalValue = document.getElementById('total'),
+      personsSum = 0,
+      daysSum = 0,
+      total = 0;
+
+  totalValue.innerHTML = 0;
+
+  persons.addEventListener('input', function () {
+    // totalValue.innerHTML = 0;
+    personsSum = +this.value;
+    total = (daysSum + personsSum)*4000;
+
+    if (restDays.value == '' || persons.value == '') {
+      totalValue.innerHTML = 0;
+    } else {
+      totalValue.innerHTML = total;
+    }
+ 
+  });
+
+  restDays.addEventListener('input', function () {
+    daysSum = +this.value;
+    total = (daysSum + personsSum) * 4000;
+
+    if (persons.value == '' || restDays.value == '') {
+      totalValue.innerHTML = 0;
+    } else {
+      totalValue.innerHTML = total;
+    }
+  });
+
+  place.addEventListener('input', function () {
+    if (restDays.value == '' || persons.value == '') {
+      totalValue.innerHTML = 0;
+    } else {
+      let a = total; //если бы мы сразу передавали значение total, 
+      //то при выборе базы каждый раз бы умножалась на модификатор
+      totalValue.innerHTML = a * this.options[this.selectedIndex].value;
+    }
+  });
+
+
+
+
+  
+
+    
+    
+
+
+
+
+
+
+
 });
