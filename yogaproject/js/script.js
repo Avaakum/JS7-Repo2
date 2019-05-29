@@ -324,17 +324,4 @@ window.addEventListener('DOMContentLoaded',  () => {
   });
 
 
-
-
-  
-
-    
-    
-
-
-
-
-
-
-
 });
